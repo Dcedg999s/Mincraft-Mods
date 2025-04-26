@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>сборки и моды Minecraft</title>
+  <title>Сборки и моды Minecraft</title>
   <style>
     body {
       background-color: #1a1a1a;
@@ -11,13 +11,14 @@
       color: #fff;
       margin: 0;
       padding: 0;
+      scroll-behavior: smooth; /* Плавный скролл */
     }
     
-    /* Название сайта */
     header {
       background-color: #222;
       padding: 20px;
       text-align: center;
+      position: relative;
     }
     
     header h1 {
@@ -26,7 +27,6 @@
       color: #ff5555;
     }
     
-    /* Контейнер с картинками */
     .mod-gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -34,20 +34,32 @@
       padding: 20px;
     }
     
-    /* Каждая карточка с модом */
     .mod-card {
       background-color: #333;
       border-radius: 10px;
       overflow: hidden;
       text-align: center;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      opacity: 0; /* Начальная прозрачность для анимации */
+      transform: translateY(20px); /* Начальное смещение */
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    
+    .mod-card.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     
     .mod-card img {
       width: 100%;
       height: auto;
       border-bottom: 2px solid #ff5555;
-      cursor: pointer; /* Делаем изображение кликабельным */
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    
+    .mod-card img:hover {
+      transform: scale(1.05);
     }
     
     .mod-card h2 {
@@ -60,36 +72,92 @@
       padding: 0 15px 20px;
       color: #bbb;
     }
+    
+    /* Кнопка "Наверх" */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #ff5555;
+      color: white;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 99;
+    }
+    
+    .back-to-top.visible {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Заголовок сайта -->
-  <header>
+  <header id="top">
     <h1>Моды от Rafting Companies</h1>
     <p>Здесь вы можете скачать моды и сборки который мы делали командой!</p>
   </header>
 
-  <!-- Галерея модов -->
   <div class="mod-gallery">
-    <!-- Карточка с модом 1 -->
     <div class="mod-card">
       <a href="scp_project_genesis.html">
-        <img src="images/Kones.png" alt="Мод 1">
+        <img src="images/Kones.png" alt="SCP: Проект Генезис">
       </a>
       <h2><a href="scp_project_genesis.html" style="color: #ff5555; text-decoration: none;">SCP: Проект Генезис</a></h2>
       <p>Сюжетный сборка, раскрывающий таинственные события в изолированном научном комплексе.</p>
     </div>
 
-    <!-- Карточка с модом 2 -->
     <div class="mod-card">
       <a href="Pravda Mura.html">
-        <img src="images/derewn.png" alt="Мод 2">
+        <img src="images/derewn.png" alt="Правда Мира">
       </a>
       <h2><a href="Pravda Mura.html" style="color: #ff5555; text-decoration: none;">🧩 Правда Мира</a></h2>
       <p>Мир вокруг кажется обычным. Но что, если всё, что ты знаешь, — это ложь?.</p>
     </div>
   </div>
 
+  <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
+
+  <script>
+    // Анимация появления при скролле
+    const cards = document.querySelectorAll('.mod-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {threshold: 0.1});
+    
+    cards.forEach(card => {
+      observer.observe(card);
+    });
+    
+    // Кнопка "Наверх"
+    window.addEventListener('scroll', () => {
+      const backToTop = document.querySelector('.back-to-top');
+      if (window.pageYOffset > 300) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
+    });
+    
+    // Плавная прокрутка для всех ссылок
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
 </body>
 </html>
